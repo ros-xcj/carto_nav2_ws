@@ -1,0 +1,40 @@
+程序说明：
+    程序运行
+        1、建图模式
+            ros2 launch my_nav2_config mapping_bringup.launch.py
+
+            ros2 run nav2_map_server map_saver_cli -f ~/carto_2d_map  （yaml地图文件保存）
+
+            ros2 service call /write_state cartographer_ros_msgs/srv/WriteState "{filename: 'carto_2d_map.pbstream'}"  （cartographer地图文件保存）
+
+
+        2、导航模式：
+            ros2 launch my_nav2_config integrated_navigation.launch.py map_yaml:= (yaml地图文件地址) map_file:= (pbstream地图文件)
+
+        3、程序编译
+
+
+            colcon build --packages-select serial
+
+            source install/setup.bash
+
+            colcon build    
+
+    1、chassis_driver 文件夹中放置的是底盘驱动，can控制方面的程序；
+    2、fdlink_ahrs 文件夹中放置的是imu驱动；
+    3、lslidar_driver lslidar_msgs文件夹中放置的是雷达驱动；
+    4、my_nav2_config 中放置的是导航的配置文件和导航、建图的launch文件；
+    5、serial 文件夹中放置的是串口配置文件；
+    6、cartographer_ros 文件夹中放置的有运行建图以及导航定位的配置文件.lua；
+
+
+
+雷达驱动修改：
+    1、修改有线连接中的固定ip --具体查看lsn10_net.yaml文件中对应的ip地址
+    2、使用rosdep 下载缺少的依赖，并进行编译
+    3、最后运行 lsn10_net_launch.py 进行查看 -- 查看时注意rviz中转换坐标系
+
+imu驱动修改：
+    1、修改imu的连接对应的串口号，跟ahrs_driver.launch.py配置文件中的串口号进行对应，修改机器人串口号或者launch文件中都行；
+    2、使用rosdep 下载缺少的依赖，并进行编译；
+    3、最后运行 ahrs_driver.launch.py 进行查看 ，并使用 ros2 topic echo /imu 查看是否有话题输出；
